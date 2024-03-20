@@ -3,6 +3,7 @@ package dev.guedes.springboottest.controller;
 import dev.guedes.springboottest.dto.AccountDTO;
 import dev.guedes.springboottest.model.Account;
 import dev.guedes.springboottest.service.AccountService;
+import dev.guedes.springboottest.util.ResponseConflict;
 import dev.guedes.springboottest.util.ResponseNotFound;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
@@ -27,9 +28,9 @@ public class AccountController {
     @PostMapping("save")
     public ResponseEntity<Object> save(@RequestBody @Valid AccountDTO accountDTO) {
         if (this.accountService.existsByEmail(accountDTO.getEmail())) {
-            ResponseNotFound responseNotFound = ResponseNotFound.getInstance();
-            responseNotFound.setMessage("Email is already in use");
-            return ResponseEntity.status(responseNotFound.getHttpStatus()).body(responseNotFound);
+            ResponseConflict responseConflict = ResponseConflict.getInstance();
+            responseConflict.setMessage("Email is already in use");
+            return ResponseEntity.status(responseConflict.getHttpStatus()).body(responseConflict);
         }
         Account account = new Account();
         BeanUtils.copyProperties(accountDTO, account);
